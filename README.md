@@ -177,15 +177,15 @@ an analysis.
 
 1. Sign in to SonarQube.
 2. Select **Projects -> Create Project -> Local Project**.
-3. Set the display name to `PoC SAST Flask Backend`.
-4. Set the project key to `poc-sast-flask-backend`.
+3. Set the display name to `poc-sonarqube-sast-cicd`.
+4. Set the project key to `poc-sonarqube-sast-cicd`.
 5. Set the main branch to `main` if requested.
 6. Select **Set Up** or **Create Project**.
 
 The project key must match `sonar-project.properties`:
 
 ```properties
-sonar.projectKey=poc-sast-flask-backend
+sonar.projectKey=poc-sonarqube-sast-cicd
 ```
 
 If a different project key is selected in SonarQube, update the property file
@@ -195,9 +195,9 @@ to match it.
 
 1. Open the avatar menu in SonarQube.
 2. Select **My Account -> Security**.
-3. Under **Generate Tokens**, enter `github-actions-poc`.
+3. Under **Generate Tokens**, enter `poc-sonarqube-sast-cicd`.
 4. Select **Project Analysis Token**.
-5. Select `PoC SAST Flask Backend`.
+5. Select `poc-sonarqube-sast-cicd`.
 6. Choose an expiration date, such as 30 days for the PoC.
 7. Select **Generate** and copy the value immediately.
 
@@ -231,7 +231,7 @@ is authenticated:
 
 ```bash
 gh auth login
-gh repo create poc-sonarqube-sast-cicd   --private   --source=.   --remote=origin   --push
+gh repo create poc-sonarqube-sast-cicd --private --source=. --remote=origin --push
 ```
 
 Open the repository and go to
@@ -389,7 +389,7 @@ Sign in to SonarQube as an administrator:
 4. Import the repository.
 5. Note the project key created by SonarQube.
 6. Update `sonar.projectKey` when the imported key differs from
-   `poc-sast-flask-backend`.
+   `poc-sonarqube-sast-cicd`.
 7. Generate a Project Analysis Token for the imported project.
 
 ## 7. Webhook configuration
