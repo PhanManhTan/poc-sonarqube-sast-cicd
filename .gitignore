@@ -1,0 +1,33 @@
+# Local configuration
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+
+# Tests and coverage
+.coverage
+coverage.xml
+htmlcov/
+
+# SonarQube scanner output
+.scannerwork/
+
+# Generated PoC output
+artifacts/
+*.log
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
