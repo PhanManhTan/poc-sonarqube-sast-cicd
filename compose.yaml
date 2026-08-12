@@ -6,6 +6,11 @@ services:
     restart: unless-stopped
     ports:
       - "${SONAR_PORT:-9000}:9000"
+    ulimits:
+      nofile:
+        soft: 131072
+        hard: 131072
+      nproc: 8192
     volumes:
       - sonarqube_data:/opt/sonarqube/data
 
