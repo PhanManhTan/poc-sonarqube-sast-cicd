@@ -1,4 +1,4 @@
-name: Backend CI and SonarQube SAST
+name: Backend CI and SonarQube Cloud SAST
 
 on:
   push:
@@ -54,11 +54,13 @@ jobs:
           retention-days: 1
 
   sast:
-    name: SonarQube SAST
+    name: SonarQube Cloud SAST
     needs: test
-    # Community Build analyzes the main branch, not pull requests.
-    if: github.event_name != 'pull_request'
-    runs-on: ${{ vars.SAST_RUNNER || 'ubuntu-latest' }}
+    # GitHub does not pass repository secrets to workflows from forked pull requests.
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
     timeout-minutes: 20
 
     steps:
@@ -74,20 +76,13 @@ jobs:
           name: backend-coverage-${{ github.run_id }}-${{ github.run_attempt }}
           path: .
 
-      - name: Submit SonarQube analysis
-        id: sonar_scan
+      - name: Submit analysis and wait for the Quality Gate
         uses: SonarSource/sonarqube-scan-action@v8.2.0
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-
-      - name: Check SonarQube quality gate
-        id: quality_gate
-        if: steps.sonar_scan.outcome == 'success'
-        continue-on-error: ${{ vars.SONAR_ENFORCE_GATE != 'true' }}
-        uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
         with:
-          pollingTimeoutSec: 300
+          args: >-
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.timeout=300
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
