@@ -1,4 +1,4 @@
-name: Backend CI and SonarQube Cloud SAST
+name: Backend CI and Qodana SAST
 
 on:
   push:
@@ -15,6 +15,8 @@ on:
 
 permissions:
   contents: read
+  checks: write
+  security-events: write
 
 jobs:
   test:
@@ -53,13 +55,16 @@ jobs:
           retention-days: 1
 
   sast:
-    name: SonarQube SAST
+    name: Qodana SAST Scan
     needs: test
-    # GitHub does not pass repository secrets to workflows from forked pull requests.
     if: >-
       github.event_name != 'pull_request' ||
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      security-events: write
     timeout-minutes: 20
 
     steps:
@@ -75,27 +80,15 @@ jobs:
           name: backend-coverage-${{ github.run_id }}-${{ github.run_attempt }}
           path: .
 
-      - name: Validate SonarQube configuration
+      - name: Qodana Scan
+        uses: JetBrains/qodana-action@v2026.2.0
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-        run: |
-          if [ -z "${SONAR_TOKEN}" ]; then
-            echo "::error::Missing SONAR_TOKEN secret. Add the SonarQube analysis token in GitHub Actions secrets."
-            exit 1
-          fi
-          if [ -z "${SONAR_HOST_URL}" ]; then
-            echo "::error::Missing SONAR_HOST_URL variable. Add the SonarQube server URL (e.g. http://your-sonar-server:9000) in GitHub Actions variables."
-            exit 1
-          fi
-
-      - name: Submit analysis and wait for the Quality Gate
-        uses: SonarSource/sonarqube-scan-action@v8.2.0
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
         with:
-          args: >-
-            -Dsonar.host.url=${{ vars.SONAR_HOST_URL }}
-            -Dsonar.qualitygate.wait=true
-            -Dsonar.qualitygate.timeout=300
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+          upload-result: true
+
+      - name: Upload Qodana SARIF report to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
