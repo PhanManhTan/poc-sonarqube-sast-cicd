@@ -88,16 +88,21 @@ Verify the following after a run:
 
 ## 4. Scan Results & Remediation
 
-![Qodana Scan Result](assets/image.png)
+### Initial Findings:
+![Qodana Initial Warning](assets/image.png)
 
-### Observed Findings:
 - **Inspection Name**: `Invalid type hints definitions and usages`
 - **Severity**: `Warning`
 - **Root Cause**: Python 3.10 union type syntax (`dict | None`) and unimported generic hints were used in type annotations without `from __future__ import annotations`.
 
 ### Remediation Applied:
 - Added `from __future__ import annotations` to `app/__init__.py`, `app/routes.py`, and `app/services.py`.
-- Updated type annotations to use standard `typing` types (`Optional[Dict[str, Any]]`, `Tuple[Dict[str, str], int]`, `Dict[str, str]`).
+- Simplified type annotations to standard `typing` definitions (`Optional[dict]`, `Tuple[dict, int]`, `dict`).
+
+### Verification & Resolved Status:
+![Qodana Resolved Scan](assets/no_new_problem.png)
+
+- Qodana scan completed cleanly: **No new problems found by Qodana for Python** (`It seems all right 🆗`).
 
 ## References
 

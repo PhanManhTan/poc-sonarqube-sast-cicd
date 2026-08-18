@@ -4,6 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'app/**'
+      - 'tests/**'
+      - 'sast-fixtures/**'
+      - '*.py'
+      - 'requirements.txt'
+      - 'pyproject.toml'
+      - 'qodana.yaml'
+      - '.github/workflows/backend-sast.yml'
   pull_request:
     branches:
       - main
@@ -11,6 +20,15 @@ on:
       - opened
       - synchronize
       - reopened
+    paths:
+      - 'app/**'
+      - 'tests/**'
+      - 'sast-fixtures/**'
+      - '*.py'
+      - 'requirements.txt'
+      - 'pyproject.toml'
+      - 'qodana.yaml'
+      - '.github/workflows/backend-sast.yml'
   workflow_dispatch:
 
 permissions:
