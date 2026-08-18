@@ -61,14 +61,16 @@ python run.py
 
 The API is available at `http://127.0.0.1:5000`.
 
-## 2. Configure Qodana
+## 2. Configure Qodana & Token Requirements
 
 Qodana is configured via `qodana.yaml` in the root of the repository:
 
 - Linter: `jetbrains/qodana-python-community:latest`
 - Profile: `qodana.recommended` (includes `CheckSecurity` inspection profile)
 
-If using Qodana Cloud, set the `QODANA_TOKEN` secret in GitHub **Settings > Secrets and variables > Actions > Secrets**.
+### Token Requirements:
+- **No Token Required (Default / Standalone Mode)**: You do **NOT** need to configure `QODANA_TOKEN` for standard CI/CD analysis. Qodana runs standalone on the GitHub Runner and uploads findings as a SARIF report directly to the GitHub **Security > Code scanning** tab.
+- **Optional Qodana Cloud Integration**: If you wish to sync results with [Qodana Cloud](https://qodana.cloud/), add your project token as a GitHub secret named `QODANA_TOKEN` (**Settings > Secrets and variables > Actions > Secrets**).
 
 ## 3. Run and verify
 
