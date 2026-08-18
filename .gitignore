@@ -19,8 +19,9 @@ dist/
 coverage.xml
 htmlcov/
 
-# SonarQube scanner output
+# SonarQube scanner & Qodana output
 .scannerwork/
+.qodana/
 
 # Generated PoC output
 artifacts/
