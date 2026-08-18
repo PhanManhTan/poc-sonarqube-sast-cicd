@@ -1,7 +1,6 @@
 from __future__ import annotations
 import re
 from decimal import Decimal
-from typing import Dict
 
 
 _SYMBOL_PATTERN = re.compile(r"^[A-Z][A-Z0-9.-]{0,9}$")
@@ -19,7 +18,7 @@ def normalize_symbol(raw_symbol: str) -> str:
     return symbol
 
 
-def build_quote(raw_symbol: str) -> Dict[str, str]:
+def build_quote(raw_symbol: str) -> dict:
     symbol = normalize_symbol(raw_symbol)
     price = _KNOWN_PRICES.get(symbol)
     if price is None:
