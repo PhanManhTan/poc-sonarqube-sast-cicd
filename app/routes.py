@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Dict, Tuple
 from flask import Blueprint, jsonify
 
 from app.services import build_quote
@@ -7,7 +9,7 @@ api = Blueprint("api", __name__)
 
 
 @api.get("/health")
-def health() -> tuple[dict[str, str], int]:
+def health() -> Tuple[Dict[str, str], int]:
     return {"service": "quote-api", "status": "ok"}, 200
 
 
