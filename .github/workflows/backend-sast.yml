@@ -20,7 +20,6 @@ jobs:
   test:
     name: Backend tests
     runs-on: ubuntu-latest
-    timeout-minutes: 10
 
     steps:
       - name: Check out source
@@ -76,6 +75,25 @@ jobs:
           name: backend-coverage-${{ github.run_id }}-${{ github.run_attempt }}
           path: .
 
+      - name: Validate SonarCloud configuration
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
+          SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
+        run: |
+          if [ -z "${SONAR_TOKEN}" ]; then
+            echo "::error::Missing SONAR_TOKEN secret. Add the SonarCloud analysis token in GitHub Actions secrets."
+            exit 1
+          fi
+          if [ -z "${SONAR_ORGANIZATION}" ]; then
+            echo "::error::Missing SONAR_ORGANIZATION variable. Add the SonarCloud organization key in GitHub Actions variables."
+            exit 1
+          fi
+          if [ -z "${SONAR_PROJECT_KEY}" ]; then
+            echo "::error::Missing SONAR_PROJECT_KEY variable. Add the SonarCloud project key in GitHub Actions variables."
+            exit 1
+          fi
+
       - name: Submit analysis and wait for the Quality Gate
         uses: SonarSource/sonarqube-scan-action@v8.2.0
         with:
@@ -86,3 +104,5 @@ jobs:
             -Dsonar.qualitygate.timeout=300
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
+          SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
