@@ -71,8 +71,8 @@ The API is available at `http://127.0.0.1:5000`.
 
 ### Step A: Connect SonarQube Cloud
 1. Sign in to [SonarQube Cloud](https://sonarcloud.io/) with your GitHub account.
-2. Create a new organization or select your existing organization (`phanmanhtan`).
-3. Import the repository `PhanManhTan/poc-sonarqube-sast-cicd`.
+2. Create a new organization or select your existing organization key.
+3. Import your repository (`<your-github-org>/<your-repo-name>`).
 4. Turn **OFF** Automatic Analysis (under **Administration > Analysis Method**) so GitHub Actions handles the analysis.
 
 ### Step B: GitHub Secrets & Variables Setup
@@ -82,8 +82,8 @@ In your GitHub Repository, go to **Settings > Secrets and variables > Actions**:
 * `SONAR_TOKEN`: Generate an analysis token in SonarCloud (**My Account > Security > Generate Tokens**) and paste it here.
 
 #### 2. Repository Variables (**Variables** tab) - Optional / Recommended:
-* `SONAR_ORGANIZATION`: `phanmanhtan`
-* `SONAR_PROJECT_KEY`: `PhanManhTan_poc-sonarqube-sast-cicd`
+* `SONAR_ORGANIZATION`: The exact organization key from SonarCloud (e.g., `<your-sonar-organization-key>`).
+* `SONAR_PROJECT_KEY`: The exact project key from SonarCloud (e.g., `<your-organization-key>_<your-repo-name>`).
 
 ## 3. Run and verify
 
