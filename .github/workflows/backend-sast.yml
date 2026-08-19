@@ -1,4 +1,4 @@
-name: Backend CI and Qodana SAST
+name: Backend CI and SonarQube Cloud SAST
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
       - '*.py'
       - 'requirements.txt'
       - 'pyproject.toml'
-      - 'qodana.yaml'
+      - 'sonar-project.properties'
       - '.github/workflows/backend-sast.yml'
   pull_request:
     branches:
@@ -27,7 +27,7 @@ on:
       - '*.py'
       - 'requirements.txt'
       - 'pyproject.toml'
-      - 'qodana.yaml'
+      - 'sonar-project.properties'
       - '.github/workflows/backend-sast.yml'
   workflow_dispatch:
 
@@ -73,7 +73,7 @@ jobs:
           retention-days: 1
 
   sast:
-    name: Qodana SAST Scan
+    name: SonarQube Cloud SAST Scan
     needs: test
     if: >-
       github.event_name != 'pull_request' ||
@@ -98,15 +98,13 @@ jobs:
           name: backend-coverage-${{ github.run_id }}-${{ github.run_attempt }}
           path: .
 
-      - name: Qodana Scan
-        uses: JetBrains/qodana-action@v2026.2.0
+      - name: SonarQube Cloud Scan
+        uses: SonarSource/sonarcloud-github-action@v3.1.0
         env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          upload-result: true
-
-      - name: Upload Qodana SARIF report to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
+          args: >-
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION || secrets.SONAR_ORGANIZATION || 'phanmanhtan' }}
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY || 'PhanManhTan_poc-sonarqube-sast-cicd' }}
+            -Dsonar.qualitygate.wait=true
