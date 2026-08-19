@@ -30,3 +30,11 @@ def build_quote(raw_symbol: str) -> dict:
         "price": f"{price:.2f}",
         "symbol": symbol,
     }
+
+
+def get_market_status() -> dict:
+    return {
+        "status": "OPEN",
+        "market": "US_EQUITIES",
+        "timezone": "UTC",
+    }

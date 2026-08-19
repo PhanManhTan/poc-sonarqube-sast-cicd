@@ -1,6 +1,6 @@
 import pytest
 
-from app.services import build_quote, normalize_symbol
+from app.services import build_quote, get_market_status, normalize_symbol
 
 
 def test_health_endpoint(client):
@@ -8,6 +8,17 @@ def test_health_endpoint(client):
 
     assert response.status_code == 200
     assert response.get_json() == {"service": "quote-api", "status": "ok"}
+
+
+def test_market_status_endpoint(client):
+    response = client.get("/api/v1/market-status")
+
+    assert response.status_code == 200
+    assert response.get_json() == {
+        "status": "OPEN",
+        "market": "US_EQUITIES",
+        "timezone": "UTC",
+    }
 
 
 def test_known_quote_endpoint(client):
@@ -50,3 +61,9 @@ def test_symbol_normalization():
 def test_quote_service_known_and_fallback_prices():
     assert build_quote("SONAR")["price"] == "100.00"
     assert build_quote("XY")["price"] == "17.70"
+
+
+def test_market_status_service():
+    status = get_market_status()
+    assert status["status"] == "OPEN"
+    assert status["market"] == "US_EQUITIES"
