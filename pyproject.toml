@@ -5,6 +5,7 @@ addopts = "-ra --strict-markers"
 [tool.coverage.run]
 branch = true
 source = ["app"]
+relative_files = true
 
 [tool.coverage.report]
 show_missing = true
